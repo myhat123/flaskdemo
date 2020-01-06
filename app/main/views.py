@@ -2,10 +2,12 @@ from ..dbwork import sqldb
 from .. import utils
 from decimal import Decimal
 from flask import render_template
+from flask_login import login_required
 
 from . import main
 
 @main.route('/show_rpt_sum_apart/<tran_date>')
+@login_required #强制登录
 def show_rpt_sum_apart(tran_date: str):
     q = sqldb.SQLDB()
     inner = q.get_time_range_dtl(tran_date, '1')
@@ -34,7 +36,7 @@ def show_rpt_sum_apart(tran_date: str):
     gs_amt_in = [{'y': float(x['amt']), 'details': x['details']} for x in utils.merge_details(inner, inner_apart)]
     gs_amt_out = [{'y': float(x['amt']), 'details': x['details']} for x in utils.merge_details(outer, outer_apart)]
 
-    return render_template('index.html', 
+    return render_template('main/index.html', 
         total_in=total_in,
         total_out=total_out,
         amt_sum_in=amt_sum_in,
