@@ -3,14 +3,12 @@ from decimal import Decimal
 from datetime import datetime, timedelta
 from typing import Dict, List
 
+from config import config
+
 class SQLDB(object):
     def __init__(self):
         self.conn = psycopg2.connect(
-            dbname="money", 
-            user="hjh", 
-            password="1234", 
-            host="localhost", 
-            port="5432"
+            config['default'].SQLALCHEMY_DATABASE_URI
         )
         self.cursor = self.conn.cursor()
 
