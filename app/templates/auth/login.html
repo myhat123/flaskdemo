@@ -10,6 +10,21 @@
 
 
         <style>
+            #inputCode {
+                width: 220px;
+                height: 35px;
+                margin-bottom: 10px;
+                padding: 0.375rem 0.75rem;
+                font-size: 1rem;
+                font-weight: 400;
+                color: #495057;
+                background-color: #fff;
+                background-clip: padding-box;
+                border: 1px solid #ced4da;
+                border-radius: 0.25rem;
+                transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+            }
+
             .bd-placeholder-img {
                 font-size: 1.125rem;
                 text-anchor: middle;
@@ -25,17 +40,19 @@
                 }
             }
         </style>
-        <link href="/static/css/signin.css" rel="stylesheet">
+        <link href="/static/css/my.css" rel="stylesheet">
     </head>
 
     <body class="text-center">
         <form class="form-signin" name="form1" action="/auth/login" method="post">
             <img class="mb-4" src="/static/img/bootstrap-solid.svg" alt="" width="72" height="72">
             <h1 class="h3 mb-3 font-weight-normal">登录</h1>
-            <label for="inputEmail" class="sr-only">姓名</label>
-            <input type="text" id="inputEmail" name="fname" class="form-control" placeholder="姓名" required autofocus>
+            <label for="inputName" class="sr-only">姓名</label>
+            <input type="text" id="inputName" name="fname" class="form-control" placeholder="姓名" required autofocus>
             <label for="inputPassword" class="sr-only">密码</label>
             <input type="password" id="inputPassword" name="fpwd" class="form-control" placeholder="密码" required>
+            <input type="text" id="inputCode" name="fcode" placeholder="验证码">
+            <img src="/auth/makeimage" alt="" width="75" height="35">
             <input class="btn btn-lg btn-primary btn-block" type="submit" value="登录">
         </form>
     </body>
