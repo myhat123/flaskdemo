@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block extra_css %}
+<style>
+    div.recentdate {
+        width: 16px;
+        height: 16px;
+        background-color: #eeeeee;
+        padding-right: 0px;
+        display: inline-block;
+        cursor: pointer;
+    }
+    div.word {
+        display: inline-block;
+        font-size: 12px;
+    }
+    table {
+        margin-top: 10px;
+        font-size: 12px;
+    }
+    div.log_details {
+        color: #007bff;
+        display: inline-block;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="head">
+    <div class="jumbotron">
+        <h1 class="display-4">金融数据展示</h1>
+        <p class="lead" style="font-size: 16px;">访问记录</p>
+    </div>
+</div>
+
+<div class="container">
+    <div class="row">
+        <div>
+            <div class="word">访问次数: </div>
+            <div class="word">少</div>
+            {% for x in access_color %}
+            <div class="recentdate" style="background-color:{{ x }}"></div>
+            {% endfor %}
+            <div class="word">多</div>
+        </div>
+
+        <table class="table">
+            <thead>
+            <tr>
+                <th>机构代码</th>
+                <th>网点名称</th>
+                <th>最近访问时间</th>
+                <th>访问ip</th>
+                <th>操作 </th>
+                <th>近5日访问</th>
+            </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>33000226</td>
+                    <td>桃苑大街营业所</td>
+                    <td>2020-02-15 12:10:05</td>
+                    <td>10.239.1.1</td>
+                    <td>重置密码</td>
+                    <td>
+                        {% for x in total %}
+                        <div class="tip recentdate" style="background-color:{{ x.color }}" data-toggle="tooltip" data-placement="top" title="{{ x.logdate }}: 次数 {{ x.cnt }}"></div>
+                        {% endfor %}
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+$().ready(function () {
+  $('.tip').colorbox({
+      iframe: true,
+      width: '60%',
+      height: '60%',
+      href: '/main/show_access_details'
+  });
+});
+</script>
+{% endblock %}

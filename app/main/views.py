@@ -1,5 +1,6 @@
 from ..dbwork import sqldb
 from .. import utils
+from .. import settings
 from decimal import Decimal
 from flask import render_template
 from flask_login import login_required
@@ -7,8 +8,10 @@ from flask_login import login_required
 from . import main
 
 @main.route('/show_rpt_sum_apart/<tran_date>')
-@login_required #强制登录
+@login_required
 def show_rpt_sum_apart(tran_date: str):
+    '''展示首页'''
+
     q = sqldb.SQLDB()
     inner = q.get_time_range_dtl(tran_date, '1')
     outer = q.get_time_range_dtl(tran_date, '2')
@@ -50,3 +53,34 @@ def show_rpt_sum_apart(tran_date: str):
         members_out=members_out
     )
 
+@main.route("/show_access_log")
+@login_required
+def show_access_log():
+    '''显示归属网点'''
+
+    q = sqldb.SQLDB()
+    total = q.get_access_cnt('20200212', '20200216')
+    for x in total:
+        x['color'] = utils.get_access_color(x['cnt'])
+
+    q.close()
+
+    return render_template('main/show_access_log.html',
+        access_color=settings.ACCESS_COLOR,
+        total=total,
+    )
+
+@main.route("/show_access_details")
+@login_required
+def show_access_details():
+    '''显示网点访问日志'''
+
+    q = sqldb.SQLDB()
+
+    results = q.get_access_log('20200216')
+
+    q.close()
+
+    return render_template('main/show_access_details.html',
+        results=results
+    )

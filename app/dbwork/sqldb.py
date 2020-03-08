@@ -157,3 +157,66 @@ class SQLDB(object):
             results.append(d)
 
         return results
+
+    def get_access_log(self, date:str):
+        """获取访问记录"""
+
+        start = date + ' 080000'
+        end = date + ' 220000'
+
+        self.cursor.execute("""
+            select time from generate_series(to_timestamp(%s, 'yyyymmdd hh24miss'), 
+                to_timestamp(%s, 'yyyymmdd hh24miss'), '30 min') as time
+        """, (start, end))
+        
+        results = []
+        for row in self.cursor.fetchall():
+            d = dict()
+            d['gs'] = row[0]
+            results.append(d)
+    
+        self.cursor.execute("""
+            select floor_minute(time, '30 minutes') as gs, time, username, \"desc\"
+            from accesslog
+            where time>=to_timestamp(%s, 'yyyymmdd hh24miss') 
+              and time<=to_timestamp(%s, 'yyyymmdd hh24miss')
+            order by gs
+        """, (start, end))
+
+        results1 = []
+        for row in self.cursor.fetchall():
+            d = dict()
+            d['gs'] = row[0]
+            d['time'] = row[1]
+            d['username'] = row[2]
+            d['desc'] = row[3]
+            results1.append(d)
+
+        for x in results:
+            x['details'] = [y for y in results1 if y['gs']==x['gs']]
+            x['cnt'] = len(x['details'])
+
+        return results
+
+    def get_access_cnt(self, start:str, end:str):
+        """获取时间段访问记录数"""
+
+        self.cursor.execute("""
+            select t1.time, coalesce(t2.cnt, 0) from (
+                select time from generate_series(%s::date, %s, '1 days') as time) t1
+            left join (
+                select t.logdate, count(*) as cnt 
+                from (
+                    select time::date as logdate, * from accesslog) t
+                group by logdate) t2
+            on (t1.time=t2.logdate)
+        """, (start, end))
+
+        results = []
+        for row in self.cursor.fetchall():
+            d = dict()
+            d['logdate'] = row[0].strftime('%m-%d')
+            d['cnt'] = row[1]
+            results.append(d)
+
+        return results

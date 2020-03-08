@@ -56,6 +56,19 @@ def merge_details(v1: List[Dict], v2:List[Dict]) -> List[Dict]:
 
     return results
 
+def get_access_color(x):
+    ACCESS = ["#eeeeee", "#d6e685", "#8cc665", "#44a340", "#1e6823"]
+    
+    if x == 0:
+        return ACCESS[0]
+    elif 0 < x <= 20:
+        return ACCESS[1]
+    elif 20 < x <= 40:
+        return ACCESS[2]
+    elif 40 < x <= 60:
+        return ACCESS[3]
+    elif x > 60:
+        return ACCESS[4]
 
 if __name__ == '__main__':
     data = get_data('initdata/data.txt')

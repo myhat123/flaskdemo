@@ -3,6 +3,8 @@ from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from . import login_manager
 
+from datetime import datetime
+
 @login_manager.user_loader
 def load_user(user_id):
     return User.query.get(int(user_id))
@@ -29,3 +31,18 @@ class User(UserMixin, db.Model):
             return '<用户id %r>' % self.id 
         
         return '<用户名 %r>' % self.username 
+
+class AccessLog(db.Model):
+    __tablename__ = 'accesslog'
+
+    id = db.Column(db.Integer, primary_key=True)
+    time = db.Column(db.DateTime, default=datetime.now)
+    username = db.Column(db.String, index=True)
+    desc = db.Column(db.String)
+    path = db.Column(db.Text)
+    endpoint = db.Column(db.String)
+    args = db.Column(db.Text)
+    referrer = db.Column(db.Text)
+    rfendpoint = db.Column(db.String)
+    addr = db.Column(db.String)
+
